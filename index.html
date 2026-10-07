@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function applyHeaderBootState() {
+            try {
+                document.documentElement.classList.add('auth-checking');
+                if (localStorage.getItem('ProjectORIGIN_header_visibility') === 'hidden') {
+                    document.documentElement.classList.add('header-boot-hidden');
+                }
+            } catch (error) {
+                // Ignore localStorage access errors.
+            }
+        }());
+    </script>
+    <style>
+        html,
+        body {
+            background: #0a0e1f;
+        }
+    </style>
+    <title>ProjectORIGIN</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-grid"></div>
+        <div class="bg-glow"></div>
+        <div class="particle" style="--delay: 0s"></div>
+        <div class="particle" style="--delay: 0.5s"></div>
+        <div class="particle" style="--delay: 1s"></div>
+        <div class="particle" style="--delay: 1.5s"></div>
+    </div>
+
+    <!-- Login Screen -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-panel">
+            <div class="hologram-border"></div>
+            <div class="login-content">
+                <div class="login-logo">
+                    <h1>ProjectORIGIN</h1>
+                </div>
+                <form class="login-form" id="loginForm">
+                    <div id="errorMessage" class="error-message" role="alert" aria-atomic="true" style="display: none;"></div>
+                    <div class="input-group">
+                        <label for="username">ユーザー名</label>
+                        <input type="text" id="username" autocomplete="username" aria-invalid="false" placeholder="ユーザー名を入力">
+                        <div class="input-glow"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">パスワード</label>
+                        <input type="password" id="password" autocomplete="current-password" aria-invalid="false" placeholder="パスワードを入力">
+                        <div class="input-glow"></div>
+                    </div>
+                    <button type="submit" class="login-btn">ログイン</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Page Foundation (not connected to the current authentication flow) -->
+    <div class="top-page" id="topPage" hidden>
+        <header class="top-page-header">
+            <div class="top-page-header-inner">
+                <div class="top-page-identity">
+                    <h1>ProjectORIGIN</h1>
+                </div>
+                <nav class="top-page-navigation" aria-label="Top page navigation">
+                    <ul>
+                        <li><button type="button" class="top-page-nav-button" data-section="origin-map">ORIGIN MAP</button></li>
+                        <li><button type="button" class="top-page-nav-button" data-section="incident-file">CASE FILES</button></li>
+                        <li><button type="button" class="top-page-nav-button" data-section="timeline">TIMELINE</button></li>
+                        <li><button type="button" class="top-page-nav-button" data-section="chat">ORIGIN AI</button></li>
+                        <li><button type="button" class="top-page-nav-button" data-section="favorites">FAVORITES</button></li>
+                        <li><button type="button" class="top-page-nav-button" data-section="info">INFORMATION</button></li>
+                    </ul>
+                </nav>
+                <div class="top-page-header-end" aria-hidden="true">
+                    <div class="top-page-menu-boundary" data-top-boundary="future-menu-trigger"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="top-page-main">
+            <section class="top-encounter" id="topEncounter" aria-labelledby="topEncounterHeading">
+                <div class="top-page-section-inner top-encounter-layout">
+                    <div class="top-encounter-copy">
+                        <h2 id="topEncounterHeading">ProjectORIGIN</h2>
+                        <p class="top-encounter-tagline" data-top-boundary="tagline">未知は、まだ世界に存在する。</p>
+                    </div>
+                    <div class="top-earth-stage" data-top-boundary="earth-presentation">
+                        <div class="top-earth-visual" aria-hidden="true">
+                            <div class="top-earth-atmosphere"></div>
+                            <div class="top-earth-surface"></div>
+                        </div>
+                        <div class="top-earth-lights" aria-hidden="true"></div>
+                        <div class="top-earth-interaction" data-top-boundary="future-earth-interaction"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="top-featured-records" id="topFeaturedRecords" aria-labelledby="topFeaturedRecordsHeading">
+                <div class="top-page-section-inner">
+                    <p class="top-page-section-label">Archive Selection</p>
+                    <h2 id="topFeaturedRecordsHeading">Featured Records</h2>
+                    <div
+                        class="top-featured-track"
+                        id="topFeaturedRecordsTrack"
+                        data-top-boundary="featured-records"
+                        role="region"
+                        aria-labelledby="topFeaturedRecordsHeading"
+                        tabindex="0"
+                    ></div>
+                </div>
+            </section>
+
+            <section class="top-exploration-paths" id="topExplorationPaths" aria-labelledby="topExplorationPathsHeading">
+                <div class="top-page-section-inner">
+                    <p class="top-page-section-label">Exploration</p>
+                    <h2 id="topExplorationPathsHeading">Exploration Paths</h2>
+                    <div class="top-progressive-exploration">
+                        <section class="top-exploration-scene top-exploration-map" aria-labelledby="topExplorationMapHeading">
+                            <div class="top-exploration-map-copy">
+                                <h3 id="topExplorationMapHeading">ORIGIN MAP</h3>
+                                <p>未知を、場所から探す。</p>
+                            </div>
+                            <div class="top-exploration-surface" data-top-boundary="origin-map" aria-hidden="true">
+                                <div class="top-exploration-world-fragment"></div>
+                                <div class="top-exploration-world-foreground"></div>
+                            </div>
+                        </section>
+                        <section class="top-exploration-scene top-exploration-cases" aria-labelledby="topExplorationCasesHeading">
+                            <div class="top-exploration-cases-copy">
+                                <h3 id="topExplorationCasesHeading">CASE FILES</h3>
+                                <p>記録の奥へ。</p>
+                            </div>
+                            <div class="top-exploration-surface" data-top-boundary="case-files" aria-hidden="true">
+                                <div class="top-exploration-record-layer top-exploration-record-layer-back"></div>
+                                <div class="top-exploration-record-layer top-exploration-record-layer-primary">
+                                    <div class="top-exploration-reference-boundary"></div>
+                                    <div class="top-exploration-record-lines"></div>
+                                </div>
+                                <div class="top-exploration-record-shadow"></div>
+                            </div>
+                        </section>
+                        <section class="top-exploration-scene top-exploration-timeline" aria-labelledby="topExplorationTimelineHeading">
+                            <div class="top-exploration-timeline-copy">
+                                <h3 id="topExplorationTimelineHeading">TIMELINE</h3>
+                                <p>未知を、時間から辿る。</p>
+                            </div>
+                            <div class="top-exploration-surface" data-top-boundary="timeline" aria-hidden="true">
+                                <div class="top-exploration-temporal-axis">
+                                    <span class="top-exploration-temporal-node top-exploration-temporal-node-near"></span>
+                                    <span class="top-exploration-temporal-node top-exploration-temporal-node-mid"></span>
+                                    <span class="top-exploration-temporal-node top-exploration-temporal-node-far"></span>
+                                </div>
+                                <div class="top-exploration-temporal-depth"></div>
+                            </div>
+                        </section>
+                        <section class="top-exploration-scene top-exploration-ai" aria-labelledby="topExplorationAiHeading">
+                            <div class="top-exploration-ai-copy">
+                                <h3 id="topExplorationAiHeading">ORIGIN AI</h3>
+                                <p>未知のつながりを探る。</p>
+                            </div>
+                            <div class="top-exploration-surface" data-top-boundary="origin-ai" aria-hidden="true">
+                                <div class="top-exploration-relationship-field">
+                                    <span class="top-exploration-relationship-line top-exploration-relationship-line-first"></span>
+                                    <span class="top-exploration-relationship-line top-exploration-relationship-line-second"></span>
+                                    <span class="top-exploration-relationship-node top-exploration-relationship-node-first"></span>
+                                    <span class="top-exploration-relationship-node top-exploration-relationship-node-second"></span>
+                                    <span class="top-exploration-relationship-node top-exploration-relationship-node-third"></span>
+                                    <span class="top-exploration-relationship-node top-exploration-relationship-node-isolated"></span>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </section>
+
+            <section class="top-origin" id="topOrigin" aria-labelledby="topOriginHeading">
+                <div class="top-page-section-inner top-origin-stage">
+                    <div class="top-origin-identity">
+                        <p class="top-page-section-label">Identity</p>
+                        <h2 id="topOriginHeading">ProjectORIGIN</h2>
+                    </div>
+                    <div class="top-origin-narrative" data-top-boundary="origin-narrative">
+                        <p class="top-origin-primary-narrative">
+                            <span>ProjectORIGINは、世界中の未知を集めるためだけの場所ではない。</span>
+                            <span>未知を見つけ、調べ、つながりを辿り、さらに次の未知へ進む。</span>
+                            <span>その探索そのものを、ひとつの体験にするために生まれた。</span>
+                        </p>
+                        <p class="top-origin-identity-statement">読むためではなく、探索するためのArchive。</p>
+                    </div>
+                    <div class="top-origin-atmosphere" aria-hidden="true"></div>
+                </div>
+            </section>
+
+            <section class="top-continue-exploring" id="topContinueExploring" aria-labelledby="topContinueExploringHeading">
+                <div class="top-page-section-inner top-closing-stage">
+                    <div class="top-closing-copy">
+                        <p class="top-page-section-label">CONTINUE EXPLORING</p>
+                        <h2 id="topContinueExploringHeading">未知は、ここで終わらない。</h2>
+                        <button type="button" class="top-page-nav-button top-closing-map-entry" data-section="origin-map">ORIGIN MAP</button>
+                    </div>
+                    <div class="top-closing-world" data-top-boundary="closing-world" aria-hidden="true">
+                        <div class="top-closing-world-fragment"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="top-page-footer">
+            <div class="top-page-section-inner">
+                <p>ProjectORIGIN</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard" style="display: none;">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <div class="header-brand">
+                    <span class="header-eyebrow">Intelligence Database</span>
+                    <h1 class="system-title">
+                        <button type="button" class="dashboard-top-page-btn" id="dashboardTopPageBtn">ProjectORIGIN</button>
+                    </h1>
+                </div>
+                <div class="system-status">
+                    <span id="systemStatus"></span>
+                </div>
+            </div>
+            <div class="header-context" aria-hidden="true">
+                <span class="header-context-label">Archive Console</span>
+            </div>
+            <div class="header-right">
+                <button
+                    type="button"
+                    class="mobile-nav-toggle"
+                    id="mobileNavToggleBtn"
+                    aria-label="Open navigation menu"
+                    aria-controls="mobileNavOverlay"
+                    aria-expanded="false"
+                >
+                    <span class="mobile-nav-toggle-icon" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+            </div>
+        </header>
+
+        <div class="mobile-nav-overlay" id="mobileNavOverlay" hidden>
+            <aside
+                class="mobile-nav-drawer"
+                id="mobileNavDrawer"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Navigation Drawer"
+                aria-hidden="true"
+            >
+                <div class="mobile-nav-header">
+                    <h2>Navigation</h2>
+                    <button type="button" class="mobile-nav-close" id="mobileNavCloseBtn" aria-label="Close navigation">✕</button>
+                </div>
+                <nav class="mobile-nav-menu" id="mobileNavMenu" aria-label="Mobile Navigation"></nav>
+                <div class="mobile-nav-footer">
+                    <button type="button" class="nav-logout-btn" id="mobileLogoutBtn">Log Out</button>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Left Sidebar -->
+            <aside class="chat-sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Navigation</h3>
+                    <nav class="sidebar-nav" id="desktopNavMenu" aria-label="Desktop Navigation"></nav>
+                    <div class="sidebar-footer">
+                        <button type="button" class="nav-logout-btn" id="desktopLogoutBtn">Log Out</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Chat Area -->
+            <div class="chat-container">
+                <!-- Chat Section -->
+                <section class="chat-section origin-console active" data-section="chat">
+                    <div class="chat-header origin-console-header">
+                        <div>
+                            <p class="origin-console-eyebrow">INVESTIGATION ASSISTANT / FOUNDATION</p>
+                            <h2>ORIGIN</h2>
+                        </div>
+                        <p class="origin-console-scope" id="originConsoleScope">現在はProjectORIGIN内の基本的な探索方法のみ案内します。</p>
+                    </div>
+                    <div class="chat-messages-wrapper" id="chatMessagesWrapper" role="log" aria-live="polite" aria-relevant="additions text">
+                        <div class="message ai-message">
+                            <p>ORIGIN案内機能です。現在はArchive、ORIGIN MAP、Timeline、Favoritesの役割を案内できます。</p>
+                        </div>
+                    </div>
+                    <div class="chat-input-section">
+                        <label class="origin-console-input-label" for="chatInput">QUESTION / BASIC GUIDANCE</label>
+                        <textarea id="chatInput" class="chat-input" aria-describedby="originConsoleScope" placeholder="利用できる探索機能について入力\nShift+Enterで改行"></textarea>
+                        <div class="origin-console-actions">
+                            <button type="button" id="clearHistoryBtn" class="clear-history-btn">履歴を削除</button>
+                            <button type="button" id="sendBtn" class="send-btn">送信</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Incident File Section -->
+                <section class="chat-section" data-section="incident-file">
+                    <div class="chat-header">
+                        <h2>事件ファイル</h2>
+                    </div>
+                    <div class="content-placeholder hologram incident-archive">
+                        <div class="incident-archive-header">
+                            <div>
+                                <div class="placeholder-badge">Case Archive / Secure Index</div>
+                                <h3 class="placeholder-title">調査事件ファイル</h3>
+                            </div>
+                            <p class="placeholder-description">登録済み事件を検索・照合し、個別の調査記録を確認します。</p>
+                        </div>
+                        <div class="incident-filter-panel" aria-label="事件ファイルの検索と絞り込み">
+                            <div class="incident-filter-group incident-filter-search-group">
+                                <label class="incident-filter-label" for="incidentSearchInput">Search Database</label>
+                                <input type="search" id="incidentSearchInput" class="incident-filter-input" placeholder="事件名、地域、分類、内容を検索">
+                            </div>
+                            <div class="incident-filter-group">
+                                <label class="incident-filter-label" for="incidentCategoryFilter">Category</label>
+                                <select id="incidentCategoryFilter" class="incident-filter-select">
+                                    <option value="all">すべて</option>
+                                </select>
+                            </div>
+                            <div class="incident-filter-group">
+                                <label class="incident-filter-label" for="incidentDangerFilter">Risk Level</label>
+                                <select id="incidentDangerFilter" class="incident-filter-select">
+                                    <option value="all">すべて</option>
+                                    <option value="1">1以上</option>
+                                    <option value="2">2以上</option>
+                                    <option value="3">3以上</option>
+                                    <option value="4">4以上</option>
+                                    <option value="5">5以上</option>
+                                </select>
+                            </div>
+                            <button type="button" class="incident-reset-btn" id="incidentResetBtn">Reset</button>
+                        </div>
+                        <p class="incident-filter-summary" id="incidentFilterSummary" aria-live="polite"></p>
+                        <div class="incident-list" id="incidentList" aria-live="polite"></div>
+                    </div>
+                </section>
+
+                <!-- Origin Map Section -->
+                <section class="chat-section" data-section="origin-map">
+                    <div class="chat-header">
+                        <h2>ORIGIN MAP</h2>
+                    </div>
+                    <div class="content-placeholder hologram origin-map-layout">
+                        <div class="origin-map-header-row">
+                            <div class="placeholder-badge">CASE DISCOVERY / GLOBAL INDEX</div>
+                            <p class="origin-map-helper">異常地点を選択して事件ファイルを調査</p>
+                        </div>
+                        <div class="origin-map-main">
+                            <div class="origin-world-map" id="originWorldMap" role="region" aria-label="事件を地点から探索する世界地図"></div>
+                            <aside class="origin-map-info" id="originMapInfo" aria-label="選択中の事件" aria-live="polite"></aside>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Timeline Section -->
+                <section class="chat-section" data-section="timeline">
+                    <div class="chat-header">
+                        <h2>タイムライン</h2>
+                    </div>
+                    <div class="content-placeholder hologram temporal-exploration-panel">
+                        <header class="temporal-exploration-header">
+                            <div class="placeholder-badge">TEMPORAL INDEX / CASE CHRONOLOGY</div>
+                            <h3 class="placeholder-title">時間から未知を探索</h3>
+                            <p class="placeholder-description">事件を時間の流れから調査するためのTemporal Exploration Indexです。</p>
+                        </header>
+                        <section class="temporal-pending-state" aria-labelledby="temporalPendingTitle" aria-describedby="temporalPendingDescription">
+                            <div class="temporal-axis-preview" aria-hidden="true">
+                                <span class="temporal-axis-line"></span>
+                                <span class="temporal-axis-node"></span>
+                            </div>
+                            <div class="temporal-pending-copy">
+                                <p class="temporal-pending-label">CHRONOLOGY DATA PENDING</p>
+                                <h4 id="temporalPendingTitle">正式な年代記録を準備しています</h4>
+                                <p id="temporalPendingDescription">検証済みの事件年代と前後関係が利用可能になるまで、未確認の出来事や日付は表示しません。</p>
+                            </div>
+                            <dl class="temporal-foundation-record" aria-label="Temporal Index status">
+                                <div>
+                                    <dt>EXPLORATION AXIS</dt>
+                                    <dd>WHEN</dd>
+                                </div>
+                                <div>
+                                    <dt>DATA STATUS</dt>
+                                    <dd>PENDING VERIFICATION</dd>
+                                </div>
+                            </dl>
+                        </section>
+                    </div>
+                </section>
+
+                <!-- Favorites Section -->
+                <section class="chat-section" data-section="favorites">
+                    <div class="chat-header">
+                        <h2>お気に入り</h2>
+                    </div>
+                    <div class="content-placeholder hologram incident-archive personal-case-collection">
+                        <div class="incident-archive-header personal-collection-header">
+                            <div>
+                                <div class="placeholder-badge">PERSONAL ARCHIVE / SAVED CASE RECORDS</div>
+                                <h3 class="placeholder-title">保存した事件ファイル</h3>
+                            </div>
+                            <p class="placeholder-description">保存済みのCaseへ戻り、調査記録を再確認します。</p>
+                        </div>
+                        <p class="incident-filter-summary personal-collection-summary" id="favoritesSummary" aria-live="polite" aria-atomic="true"></p>
+                        <div class="incident-list personal-collection-list" id="favoritesList" aria-live="polite"></div>
+                    </div>
+                </section>
+
+                <!-- Info Section -->
+                <section class="chat-section" data-section="info">
+                    <div class="chat-header">
+                        <h2>Project Identity</h2>
+                    </div>
+                    <article class="info-panel project-identity-panel">
+                        <header class="project-identity-header">
+                            <p class="project-identity-eyebrow">PROJECT IDENTITY / ARCHIVE RECORD</p>
+                            <h3>ProjectORIGIN</h3>
+                            <p>世界中の未知を、場所と時間から発見し、事件ファイルを通して調査する都市伝説アーカイブです。</p>
+                        </header>
+
+                        <section class="project-identity-section" aria-labelledby="explorationFrameworkHeading">
+                            <h4 id="explorationFrameworkHeading">EXPLORATION FRAMEWORK</h4>
+                            <dl class="project-identity-grid">
+                                <div>
+                                    <dt>CASE ARCHIVE</dt>
+                                    <dd>事件ファイルの一覧から探索</dd>
+                                </div>
+                                <div>
+                                    <dt>ORIGIN MAP</dt>
+                                    <dd>場所から未知を探索</dd>
+                                </div>
+                                <div>
+                                    <dt>TIMELINE</dt>
+                                    <dd>時間から探索するための基盤</dd>
+                                </div>
+                                <div>
+                                    <dt>PERSONAL ARCHIVE</dt>
+                                    <dd>保存したCaseへ戻る</dd>
+                                </div>
+                            </dl>
+                        </section>
+
+                        <section class="project-identity-section project-identity-assistance" aria-labelledby="assistanceHeading">
+                            <div>
+                                <h4 id="assistanceHeading">INVESTIGATION ASSISTANCE</h4>
+                                <h5>ORIGIN</h5>
+                            </div>
+                            <p>ユーザー自身による探索を支援するInvestigation Assistantです。現在はProjectORIGIN内の基本案内に限定されています。</p>
+                        </section>
+                    </article>
+                </section>
+
+                <div class="incident-modal-overlay" id="incidentModalOverlay" hidden>
+                    <div class="incident-modal" role="dialog" aria-modal="true" aria-labelledby="incidentModalTitle">
+                        <div class="incident-modal-background" id="incidentModalBackground"></div>
+                        <button type="button" class="incident-modal-corner-close" id="incidentModalCornerCloseBtn" aria-label="Close case file">&#10005;</button>
+                        <div class="incident-modal-main">
+                            <div class="incident-modal-hero-copy">
+                                <div class="incident-modal-archive-line">
+                                    <p class="incident-modal-file" id="incidentModalFile"></p>
+                                    <p class="incident-modal-status" id="incidentModalStatus"></p>
+                                </div>
+                                <h3 id="incidentModalTitle"></h3>
+                                <p class="incident-modal-english-title" id="incidentModalEnglishTitle" hidden></p>
+                                <p class="incident-modal-intro" id="incidentModalIntro"></p>
+                            </div>
+                        </div>
+                        <section class="incident-modal-record" aria-labelledby="incidentModalRecordHeading">
+                            <h4 class="incident-modal-section-label" id="incidentModalRecordHeading">CASE RECORD</h4>
+                            <div class="incident-modal-details">
+                            <div class="incident-modal-meta-row">
+                                <span class="incident-modal-meta-label">REGION</span>
+                                <span class="incident-modal-meta-value" id="incidentModalRegion"></span>
+                            </div>
+                            <div class="incident-modal-meta-row">
+                                <span class="incident-modal-meta-label">ERA</span>
+                                <span class="incident-modal-meta-value" id="incidentModalYear"></span>
+                            </div>
+                            <div class="incident-modal-meta-row">
+                                <span class="incident-modal-meta-label">STATUS</span>
+                                <span class="incident-modal-meta-value" id="incidentModalStatusRecord"></span>
+                            </div>
+                            <div class="incident-modal-meta-row" id="incidentModalCategoryRow">
+                                <span class="incident-modal-meta-label">CATEGORY</span>
+                                <span class="incident-modal-meta-value" id="incidentModalCategory"></span>
+                            </div>
+                            <div class="incident-modal-meta-row" id="incidentModalClassRow" hidden>
+                                <span class="incident-modal-meta-label">CLASS</span>
+                                <span class="incident-modal-meta-value" id="incidentModalClass"></span>
+                            </div>
+                            <div class="incident-modal-meta-row">
+                                <span class="incident-modal-meta-label">RISK LEVEL</span>
+                                <span class="incident-modal-meta-value" id="incidentModalRisk"></span>
+                            </div>
+                            </div>
+                            <div class="danger-gauge incident-modal-risk-gauge" id="incidentModalRiskGauge" aria-label="Risk level gauge"></div>
+                        </section>
+                        <section class="incident-modal-body-section" aria-labelledby="incidentModalBodyHeading">
+                            <h4 class="incident-modal-body-heading" id="incidentModalBodyHeading">INVESTIGATION NOTES</h4>
+                            <div class="incident-modal-body-copy" id="incidentModalBodyCopy"></div>
+                        </section>
+                        <div class="incident-modal-actions">
+                            <button type="button" class="incident-map-btn" id="incidentViewOnMapBtn">VIEW ON ORIGIN MAP</button>
+                            <button type="button" class="incident-close-btn" id="incidentCloseBtn">CLOSE FILE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="logout-confirm-overlay" id="logoutConfirmOverlay" hidden>
+                    <div class="logout-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="logoutConfirmTitle">
+                        <h3 id="logoutConfirmTitle">ログアウトしますか？</h3>
+                        <div class="logout-confirm-actions">
+                            <button type="button" class="logout-confirm-cancel" id="logoutConfirmCancelBtn">Cancel</button>
+                            <button type="button" class="logout-confirm-submit" id="logoutConfirmSubmitBtn">Log Out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Avatar Panel -->
+            <aside class="avatar-panel" id="originAssistantPanel" aria-label="ORIGIN assistant scope">
+                <div class="avatar-section">
+                    <div class="ai-avatar" aria-hidden="true">
+                        <div class="avatar-core"></div>
+                        <div class="avatar-orbit"></div>
+                    </div>
+                    <div class="avatar-info">
+                        <h3>ORIGIN</h3>
+                        <p>Investigation Assistant</p>
+                    </div>
+                    <div class="avatar-status">
+                        <span class="avatar-status-label">CURRENT SCOPE</span>
+                        <span>Basic guidance only</span>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script src="data/incidents.js?v=20260822"></script>
+    <script src="script.js?v=20260716"></script>
+</body>
+</html>
